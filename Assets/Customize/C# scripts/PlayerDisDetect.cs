@@ -22,15 +22,14 @@ public class PlayerDisDetect : MonoBehaviour
     public Transform HeadPoint;
     public Transform JawPoint;
     public UMAExpressionPlayer expressionPlayer;
-    private Vector3 originalRightChestPosition;  // 右胸部原始位置
-    private Vector3 originalLeftChestPosition;  // 坐胸部原始位置
-    //private Vector3 insideChestPosition; // 中间胸内点位置
+    private Vector3 originalRightChestPosition;  // right chest position
+    private Vector3 originalLeftChestPosition;  // left chest position
     private InputDevice leftHandDevice;
     private InputDevice rightHandDevice;
-    public float openThreshold = 0.2f; // 开口的距离阈值
-    public float farThreshold = 0.25f; // 闭口的距离阈值
-    bool isMouthOpen = false; // 嘴巴当前是否张开
-    bool handWasFar = true;   // 手是否曾经远离嘴巴
+    public float openThreshold = 0.2f; // open mouth
+    public float farThreshold = 0.25f; // close mouth 
+    bool isMouthOpen = false; 
+    bool handWasFar = true;  
     bool isCompressing = false; // determine if you are doing chest compression, false 
     int press_time = 0;
     NetworkContext context;
@@ -82,8 +81,8 @@ public class PlayerDisDetect : MonoBehaviour
             if (RightChestTransform.position.y > 0.007 || LeftChestTransform.position.y > 0.01)
             {
                 Debug.Log("Hit chest");
-                RightChestTransform.position -= -Vector3.down * 2 / 2 * 0.01f; //(leftVelocity.y + rightVelocity.y)
-                LeftChestTransform.position -= -Vector3.down * 2 / 2 * 0.01f;  //(leftVelocity.y + rightVelocity.y)
+                RightChestTransform.position -= -Vector3.down * (leftVelocity.y + rightVelocity.y) / 2 * 0.01f; 
+                LeftChestTransform.position -= -Vector3.down * (leftVelocity.y + rightVelocity.y) / 2 * 0.01f;  
                 Message m = new Message();
                 m.RightChestTransform = RightChestTransform.position;
                 m.LeftChestTransform = LeftChestTransform.position;
@@ -99,7 +98,7 @@ public class PlayerDisDetect : MonoBehaviour
         }
         else if (isCompressing)
         {
-            // 将胸部移回原始位置
+            //  move chest back to original postion 
             RightChestTransform.localPosition = originalRightChestPosition;
             LeftChestTransform.localPosition = originalLeftChestPosition;
             isCompressing = false;
@@ -121,12 +120,12 @@ public class PlayerDisDetect : MonoBehaviour
         float RightToHand = Vector3.Distance(HeadPoint.position, PlayerRightHand.position);
         if (((RightToJaw < openThreshold && LeftToHand < openThreshold) || (LeftToJaw < openThreshold && RightToHand < openThreshold)) && handWasFar)
         {
-            // 切换嘴巴的状态
+            // open Jaw
             isMouthOpen = !isMouthOpen;
-            // 更新手的状态
+            // determine whether hands is away   
             handWasFar = false;
 
-            // 根据嘴巴的状态执行开或闭
+            // open Jaw 
             if (isMouthOpen)
             {
                 Debug.Log("Open Jaw");
@@ -148,7 +147,7 @@ public class PlayerDisDetect : MonoBehaviour
         }
         else if (RightToJaw > farThreshold || LeftToHand > farThreshold || LeftToJaw > farThreshold || RightToHand > farThreshold)
         {
-            // 更新手的状态，表示手已远离
+            // Update the status of the hand to indicate that the hand is away
             handWasFar = true;
         }
     }
