@@ -1,10 +1,14 @@
 ## Model instruction
-- avatar ... // CZH write this part to describe the avatar created by UMA
+- UMA avatar ... // CZH write this part to describe the avatar created by UMA
 
 - All the other models (including AED, heartbeat monitor, electrode pads, first-aid kit)  are created in folder `Assets/Customize`.
 
 ## Code instruction
 All C# script are in folder `Assets/Customize/C# scripts`.
+
+'PlayerDisDetect.cs` used to detect the distance between player's hand and the victim's chest and head.    
+
+'HandHapticFeedback.cs` used to trigger the vibration of the handle when the hand is pressing on the chest 
 
 `Case_01_B_OpenOrClose.cs` used for first aid kit to control the opening and closing of the box, it also includes the synchronization feature with Ubiq and other players.
 
